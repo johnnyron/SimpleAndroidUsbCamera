@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Surface;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -52,14 +53,14 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     private static final String TAG = "Debug";
     @BindView(R.id.camera_view)
     public View mTextureView;
-    @BindView(R.id.toolbar)
-    public Toolbar mToolbar;
-    @BindView(R.id.seekbar_brightness)
-    public SeekBar mSeekBrightness;
-    @BindView(R.id.seekbar_contrast)
-    public SeekBar mSeekContrast;
-    @BindView(R.id.switch_rec_voice)
-    public Switch mSwitchVoice;
+//    @BindView(R.id.toolbar)
+//    public Toolbar mToolbar;
+//    @BindView(R.id.seekbar_brightness)
+//    public SeekBar mSeekBrightness;
+//    @BindView(R.id.seekbar_contrast)
+//    public SeekBar mSeekContrast;
+//    @BindView(R.id.switch_rec_voice)
+//    public Switch mSwitchVoice;
 
     private UVCCameraHelper mCameraHelper;
     private CameraViewInterface mUVCCameraView;
@@ -111,8 +112,12 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
                         }
                         Looper.prepare();
                         if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
-                            mSeekBrightness.setProgress(mCameraHelper.getModelValue(UVCCameraHelper.MODE_BRIGHTNESS));
-                            mSeekContrast.setProgress(mCameraHelper.getModelValue(UVCCameraHelper.MODE_CONTRAST));
+//                            List<Size> list = mCameraHelper.getSupportedPreviewSizes();
+//                            mCameraHelper.updateResolution(1920,1080);
+//                            mSeekBrightness.setProgress(mCameraHelper.getModelValue(UVCCameraHelper.MODE_BRIGHTNESS));
+//                            mSeekContrast.setProgress(mCameraHelper.getModelValue(UVCCameraHelper.MODE_CONTRAST));
+//                            mCameraHelper.updateResolution(3840, 1634);
+//                            mCameraHelper.updateResolution(1692, 720);
                         }
                         Looper.loop();
                     }
@@ -128,6 +133,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usbcamera);
         ButterKnife.bind(this);
@@ -138,7 +144,10 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
         mUVCCameraView.setCallback(this);
         mCameraHelper = UVCCameraHelper.getInstance();
         mCameraHelper.setDefaultFrameFormat(UVCCameraHelper.FRAME_FORMAT_MJPEG);
-        mCameraHelper.initUSBMonitor(this, mUVCCameraView, listener);
+
+        int width = MyApplication.configuration.getWidth();
+        int height = MyApplication.configuration.getHeight();
+        mCameraHelper.initUSBMonitor(this, mUVCCameraView, listener, width, height, MyApplication.configuration.getRatio());
 
         mCameraHelper.setOnPreviewFrameListener(new AbstractUVCCameraHandler.OnPreViewResultListener() {
             @Override
@@ -149,46 +158,46 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
     }
 
     private void initView() {
-        setSupportActionBar(mToolbar);
-
-        mSeekBrightness.setMax(100);
-        mSeekBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
-                    mCameraHelper.setModelValue(UVCCameraHelper.MODE_BRIGHTNESS,progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        mSeekContrast.setMax(100);
-        mSeekContrast.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
-                    mCameraHelper.setModelValue(UVCCameraHelper.MODE_CONTRAST,progress);
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+//        setSupportActionBar(mToolbar);
+//
+//        mSeekBrightness.setMax(100);
+//        mSeekBrightness.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
+//                    mCameraHelper.setModelValue(UVCCameraHelper.MODE_BRIGHTNESS,progress);
+//                }
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
+//        mSeekContrast.setMax(100);
+//        mSeekContrast.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                if(mCameraHelper != null && mCameraHelper.isCameraOpened()) {
+//                    mCameraHelper.setModelValue(UVCCameraHelper.MODE_CONTRAST,progress);
+//                }
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -256,7 +265,7 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
                     RecordParams params = new RecordParams();
                     params.setRecordPath(videoPath);
                     params.setRecordDuration(0);                        // auto divide saved,default 0 means not divided
-                    params.setVoiceClose(mSwitchVoice.isChecked());    // is close voice
+//                    params.setVoiceClose(mSwitchVoice.isChecked());    // is close voice
 
                     params.setSupportOverlay(true); // overlay only support armeabi-v7a & arm64-v8a
                     mCameraHelper.startPusher(params, new AbstractUVCCameraHandler.OnEncodeResultListener() {
@@ -283,12 +292,12 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
                     // if you only want to push stream,please call like this
                     // mCameraHelper.startPusher(listener);
                     showShortMsg("start record...");
-                    mSwitchVoice.setEnabled(false);
+//                    mSwitchVoice.setEnabled(false);
                 } else {
                     FileUtils.releaseFile();
                     mCameraHelper.stopPusher();
                     showShortMsg("stop record...");
-                    mSwitchVoice.setEnabled(true);
+//                    mSwitchVoice.setEnabled(true);
                 }
                 break;
             case R.id.menu_resolution:
@@ -340,16 +349,8 @@ public class USBCameraActivity extends AppCompatActivity implements CameraDialog
 
     // example: {640x480,320x240,etc}
     private List<String> getResolutionList() {
-        List<Size> list = mCameraHelper.getSupportedPreviewSizes();
+
         List<String> resolutions = null;
-        if (list != null && list.size() != 0) {
-            resolutions = new ArrayList<>();
-            for (Size size : list) {
-                if (size != null) {
-                    resolutions.add(size.width + "x" + size.height);
-                }
-            }
-        }
         return resolutions;
     }
 

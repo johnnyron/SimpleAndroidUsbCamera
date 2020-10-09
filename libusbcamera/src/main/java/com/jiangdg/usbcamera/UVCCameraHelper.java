@@ -32,8 +32,11 @@ public class UVCCameraHelper {
     public static final String SUFFIX_JPEG = ".jpg";
     public static final String SUFFIX_MP4 = ".mp4";
     private static final String TAG = "UVCCameraHelper";
-    private int previewWidth = 640;
-    private int previewHeight = 480;
+    private int previewWidth = 1920;
+    private int previewHeight = 1080;
+    private float previewRatio = 2.35f;
+
+
     public static final int FRAME_FORMAT_YUYV = UVCCamera.FRAME_FORMAT_YUYV;
     // Default using MJPEG
     // if your device is connected,but have no images
@@ -79,10 +82,12 @@ public class UVCCameraHelper {
         void onDisConnectDev(UsbDevice device);
     }
 
-    public void initUSBMonitor(Activity activity, CameraViewInterface cameraView, final OnMyDevConnectListener listener) {
+    public void initUSBMonitor(Activity activity, CameraViewInterface cameraView, final OnMyDevConnectListener listener, int wid, int hei, float ratio) {
         this.mActivity = activity;
         this.mCamView = cameraView;
-
+        previewHeight = hei;
+        previewWidth = wid;
+        previewRatio = ratio;
         mUSBMonitor = new USBMonitor(activity.getApplicationContext(), new USBMonitor.OnDeviceConnectListener() {
 
             // called by checking usb device
@@ -154,7 +159,11 @@ public class UVCCameraHelper {
             mCameraHandler = null;
         }
         // initialize camera handler
-        mCamView.setAspectRatio(previewWidth / (float)previewHeight);
+//        mCamView.setAspectRatio(previewWidth / (float)previewHeight);
+        if (previewRatio > 2.35f) {
+            previewRatio = 2.35f;
+        }
+        mCamView.setAspectRatio(previewRatio);
         mCameraHandler = UVCCameraHandler.createHandler(mActivity, mCamView, 2,
                 previewWidth, previewHeight, mFrameFormat);
     }

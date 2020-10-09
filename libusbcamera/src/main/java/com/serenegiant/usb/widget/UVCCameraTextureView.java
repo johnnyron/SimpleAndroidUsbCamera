@@ -62,6 +62,8 @@ public class UVCCameraTextureView extends AspectRatioTextureView    // API >= 14
 	private Callback mCallback;
 	// Camera分辨率宽度
 
+	public static float sRatio = 2.35f;
+	public static float sHdmiRatio = 1.77f;
 
 	/** for calculation of frame rate */
 	private final FpsCounter mFpsCounter = new FpsCounter();
@@ -567,7 +569,20 @@ public class UVCCameraTextureView extends AspectRatioTextureView    // API >= 14
 	    		mEglSurface = mEgl.createFromSurface(mSurface);
 	    		mEglSurface.makeCurrent();
 	    		// create drawing object
-	    		mDrawer = new GLDrawer2D(true);
+//	    		mDrawer = new GLDrawer2D(true);
+//	    		mDrawer.updateShader("#version 100\nuniform mat4 uMVPMatrix;\nuniform mat4 uTexMatrix;\nattribute highp vec4 aPosition;\nattribute highp vec4 aTextureCoord;\nvarying highp vec2 vTextureCoord;\nvoid main() {\n  vec4 aaa = uMVPMatrix * aPosition;\ngl_Position = aaa;\n    vTextureCoord = (uTexMatrix * aTextureCoord).xy;\n}\n", "#version 100\n#extension GL_OES_EGL_image_external : require\nprecision mediump float;\nuniform samplerExternalOES sTexture;\nvarying highp vec2 vTextureCoord;\nvoid main() {\n  gl_FragColor = texture2D(sTexture, vTextureCoord);\n}");
+				if (sRatio > 2.0f) {
+					sRatio = 2.0f;
+				}
+				float by_howmuch = (sRatio / sHdmiRatio);
+				if (by_howmuch < 1.02f) {
+					by_howmuch = 1.0f;
+				}
+
+				final float[] VERTICES = new float[]{1.0F*by_howmuch, 1.0F, -1.0F*by_howmuch, 1.0F, 1.0F*by_howmuch, -1.0F, -1.0F*by_howmuch, -1.0F};
+				final float[] TEXCOORD = new float[]{1.0F, 1.0F, 0.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F};
+				mDrawer = new GLDrawer2D(VERTICES, TEXCOORD, true);
+
 			}
 
 	    	private final void release() {

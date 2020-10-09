@@ -15,10 +15,12 @@ public class MyApplication extends Application {
     // File Directory in sd card
     public static final String DIRECTORY_NAME = "USBCamera";
 
+    public static conf configuration = new conf();
+
     @Override
     public void onCreate() {
         super.onCreate();
-        mCrashHandler = CrashHandler.getInstance();
-        mCrashHandler.init(getApplicationContext(), getClass());
     }
+
+
 }

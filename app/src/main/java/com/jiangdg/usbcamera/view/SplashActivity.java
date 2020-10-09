@@ -83,13 +83,15 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }
-        // Get permissions success or not
-        if (mMissPermissions.isEmpty()) {
-            startMainActivity();
-        } else {
-            Toast.makeText(SplashActivity.this, "get permissions failed,exiting...",Toast.LENGTH_SHORT).show();
-            SplashActivity.this.finish();
-        }
+        startMainActivity();
+//
+//        // Get permissions success or not
+//        if (mMissPermissions.isEmpty()) {
+//
+//        } else {
+//            Toast.makeText(SplashActivity.this, "get permissions failed,exiting...",Toast.LENGTH_SHORT).show();
+//            SplashActivity.this.finish();
+//        }
     }
 
     private void startMainActivity() {

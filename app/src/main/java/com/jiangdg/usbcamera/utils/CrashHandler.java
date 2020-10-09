@@ -7,6 +7,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.jiangdg.usbcamera.UVCCameraHelper;
@@ -29,7 +30,7 @@ import java.util.Map;
  */
 public class CrashHandler implements UncaughtExceptionHandler {
 
-	public static final String TAG = "CrashHandler";
+	public static final String TAG = "usbcamera2";
 
 	public static final String PROGRAM_BROKEN_ACTION = "com.teligen.wccp.PROGRAM_BROKEN";
 
@@ -61,7 +62,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 			mDefaultHandler.uncaughtException(thread, ex);
 		} else {
 			System.out.println("uncaughtException--->" + ex.getMessage());
-//			Log.e(TAG, ex.getMessage());
+			Log.e(TAG, ex.getMessage());
 			logError(ex);
 			try {
 				Thread.sleep(3000);
@@ -138,7 +139,9 @@ public class CrashHandler implements UncaughtExceptionHandler {
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(file);
+			Log.e("usbcamera",sb.toString()+"exception："+ex.getLocalizedMessage());
 			fos.write((sb.toString()+"exception："+ex.getLocalizedMessage()).getBytes());
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
